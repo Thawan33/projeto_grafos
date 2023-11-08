@@ -156,24 +156,24 @@ int vertice_folha(int** grafo,int quant_vertices){
 }
 
 void menu(int** grafo,int quant_vertices){
-    char opc,resp;
+    char resp;
+    int opc;
     do{
-        cout << "opcoes do menu";
+        cout << "verificar se e completo[1] \n Verificar se e um multigrafo[2] \n Quantos laços existem[3] \n Quantos vertices folhas existem[4] \n Verificar se existe vertice isolado[5] \n Verificar se e possível ser planar[6] \n Sair[7]: ";
         cin >> opc;
         switch (opc){
             case 1:
                 if(grafo_completo(grafo,quant_vertices)){
-                    cout << "e completo";
+                    cout << "e completo" << endl;
                 }else{
-                    cout << "nao e completo";
+                    cout << "nao e completo" << endl;
                 }
                 break;
-            
             case 2:
                 if(multigrafo(grafo,quant_vertices)){
-                    cout << "e multigrafo";
+                    cout << "e multigrafo" << endl;
                 }else{
-                    cout << "nao e multigrafo";
+                    cout << "nao e multigrafo" << endl;
                 }
                 break;
             case 3:
@@ -181,7 +181,7 @@ void menu(int** grafo,int quant_vertices){
                     cout<< "tem laco(s): " << quant_lacos(grafo,quant_vertices) << endl;
                 }else{
                     cout << "nao tem laco" << endl;
-                } 
+                }
                 break;
             case 4:
                 if(vertice_folha(grafo,quant_vertices) >= 1){
@@ -192,13 +192,19 @@ void menu(int** grafo,int quant_vertices){
                 break;
             case 5:
                 if(vertice_isolado(grafo,quant_vertices) > 0){
-                    cout << "tem vertice isolado";
+                    cout << "tem vertice isolado" << endl;
                 }else{
-                    cout << " nao tem vertice isolado";
+                    cout << " nao tem vertice isolado" << endl;
                 }
                 break;
+            case 6:
+                /* verificar se é possível ser planar*/
+                break;
+            default:
+                cout << "opcao invalida" << endl;
+                break;
             }
-        cout << "resposta";
+        cout << "deseja fazer outra verificao?[s]: ";
         cin >> resp;
     }
     while(resp == 's');
@@ -230,15 +236,12 @@ int main(){
     fazer_ligacoes(grafo,quant_vertices,direcional);
     cout<< endl << "------ MATRIZ FINAL ------" << endl;
     imprimir_matriz(grafo,quant_vertices,quant_vertices);
+    cout << endl;
 
 
 
 
-    if(vertice_isolado(grafo,quant_vertices) > 0){
-        cout << "tem vertice isolado";
-    }else{
-        cout << " nao tem vertice isolado";
-    }
+    menu(grafo,quant_vertices);
 
     //fim do programa
     system ("pause");
