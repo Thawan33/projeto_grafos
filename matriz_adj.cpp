@@ -123,25 +123,24 @@ int quant_lacos(int** grafo,int quant_vertices){
     return lacos;
 }
 
-bool vertice_isolado(int** grafo,int quant_vertices){
-    int cont = 0;
+int vertice_isolado(int** grafo,int quant_vertices){
+    int cont, vertices_isolados = 0;
     for(int i = 0;i<quant_vertices;i++){
+        cont = 0;
         for(int j = 0;j<quant_vertices;j++){
-            if(grafo[i][j] > 0){
+            if(grafo[i][j] > 0 && i != j){
                 cont++;
             }
         }
         if(cont == 0){
-            return true;
+            vertices_isolados++;
         }
-        cont = 0;
     }
-    return false;
+    return vertices_isolados;
 }
 
 int vertice_folha(int** grafo,int quant_vertices){
-    int cont = 0;
-    int quant_vertice_folha = 0;
+    int cont, quant_vertice_folha = 0;
     for(int i = 0;i<quant_vertices;i++){
         for(int j = 0;j<quant_vertices;j++){
             if(grafo[i][j] > 0 && i != j){
@@ -192,13 +191,15 @@ void menu(int** grafo,int quant_vertices){
                 }
                 break;
             case 5:
-                if(vertice_isolado){
+                if(vertice_isolado(grafo,quant_vertices) > 0){
                     cout << "tem vertice isolado";
                 }else{
                     cout << " nao tem vertice isolado";
                 }
                 break;
             }
+        cout << "resposta";
+        cin >> resp;
     }
     while(resp == 's');
 }
@@ -233,19 +234,13 @@ int main(){
 
 
 
-    if(vertice_isolado){
-        cout << "tem vertice isolado" << endl;
+    if(vertice_isolado(grafo,quant_vertices) > 0){
+        cout << "tem vertice isolado";
     }else{
-        cout << " nao tem vertice isolado" << endl;
-    }
-    if(vertice_folha(grafo,quant_vertices) >= 1){
-        cout<< "tem vertice folha: " << vertice_folha(grafo,quant_vertices) << endl;
-    }else{
-        cout << "nao tem vertice folha" << endl;
+        cout << " nao tem vertice isolado";
     }
 
-
-
+    //fim do programa
     system ("pause");
     return 0;
 }
