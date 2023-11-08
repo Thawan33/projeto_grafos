@@ -1,16 +1,6 @@
 #include <iostream>
 using namespace std;
 
-/*
-1 - Verificar se o grafo é completo
-2 - Verificar se é um multigrafo //
-3 - Quantos laços existem //
-4 - Quantos vértices folhas existem
-5 - Verificar se existe vértice isolado
-6 - Verificar se é possível ser planar
-7 - Sair
-*/
-
 int** criar_matriz(int lin,int col){
     int **mat;
     mat = new int*[lin];
@@ -88,16 +78,28 @@ void fazer_ligacoes(int** grafo,int quant_vertices,bool direcional){
 
 //verificações --------------------------------------------------
 
-int quant_lacos(int** grafo,int quant_vertices){
-    int lacos = 0;
+//1 - Verificar se o grafo é completo
+bool grafo_completo(int** grafo,int quant_vertices){
+    int cont, vertices_completos = 0;
     for(int i = 0;i<quant_vertices;i++){
-        if(grafo[i][i] >= 1){
-            lacos++;
+        for(int j = 0;j<quant_vertices;j++){
+            if(grafo[i][j] > 0 && i != j){
+                cont++;
+            }
         }
+        if(cont == quant_vertices - 1){
+            vertices_completos++;
+        }
+        cont = 0;
     }
-    return lacos;
+    if(vertices_completos == quant_vertices){
+        return true;
+    }else{
+        return false;
+    }
 }
 
+//2 - Verificar se é um multigrafo
 bool multigrafo(int** grafo,int quant_vertices){
     bool mg = false;
     for(int i = 0;i<quant_vertices;i++){
@@ -110,19 +112,31 @@ bool multigrafo(int** grafo,int quant_vertices){
     return mg;
 }
 
+// 3 - Quantos laços existem
+int quant_lacos(int** grafo,int quant_vertices){
+    int lacos = 0;
+    for(int i = 0;i<quant_vertices;i++){
+        if(grafo[i][i] >= 1){
+            lacos++;
+        }
+    }
+    return lacos;
+}
+
 bool vertice_isolado(int** grafo,int quant_vertices){
     int cont = 0;
-    bool isolado = false;
     for(int i = 0;i<quant_vertices;i++){
         for(int j = 0;j<quant_vertices;j++){
-            if(grafo[i][j] > 0 && i != j){
+            if(grafo[i][j] > 0){
                 cont++;
             }
         }
         if(cont == 0){
-            isolado = true;
+            return true;
         }
+        cont = 0;
     }
+    return false;
 }
 
 int vertice_folha(int** grafo,int quant_vertices){
@@ -139,6 +153,7 @@ int vertice_folha(int** grafo,int quant_vertices){
         }
         cont = 0;
     }
+    return quant_vertice_folha;
 }
 
 void menu(int** grafo,int quant_vertices){
@@ -148,7 +163,11 @@ void menu(int** grafo,int quant_vertices){
         cin >> opc;
         switch (opc){
             case 1:
-                /* grafo completo */
+                if(grafo_completo(grafo,quant_vertices)){
+                    cout << "e completo";
+                }else{
+                    cout << "nao e completo";
+                }
                 break;
             
             case 2:
@@ -164,18 +183,21 @@ void menu(int** grafo,int quant_vertices){
                 }else{
                     cout << "nao tem laco" << endl;
                 } 
+                break;
             case 4:
                 if(vertice_folha(grafo,quant_vertices) >= 1){
                     cout<< "tem vertice folha: " << vertice_folha(grafo,quant_vertices) << endl;
                 }else{
                     cout << "nao tem vertice folha" << endl;
                 }
+                break;
             case 5:
                 if(vertice_isolado){
                     cout << "tem vertice isolado";
                 }else{
                     cout << " nao tem vertice isolado";
                 }
+                break;
             }
     }
     while(resp == 's');
@@ -197,7 +219,7 @@ int main(){
         direcional = false;
     }
 
-    int quant_vertices,quant_arestas,vert_inicial,vert_final;
+    int quant_vertices;
     cout << "Quantos vertices tem o grafo? ";
     cin >> quant_vertices;
 
@@ -211,16 +233,6 @@ int main(){
 
 
 
-    if(quant_lacos(grafo,quant_vertices) >= 1){
-        cout<< "tem laco(s): " << quant_lacos(grafo,quant_vertices) << endl;
-    }else{
-        cout << "nao tem laco" << endl;
-    }
-    if(multigrafo(grafo,quant_vertices)){
-        cout << "e multigrafo" << endl;
-    }else{
-        cout << "nao e multigrafo" << endl;
-    }
     if(vertice_isolado){
         cout << "tem vertice isolado" << endl;
     }else{
@@ -231,7 +243,6 @@ int main(){
     }else{
         cout << "nao tem vertice folha" << endl;
     }
-
 
 
 
