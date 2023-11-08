@@ -110,6 +110,37 @@ bool multigrafo(int** grafo,int quant_vertices){
     return mg;
 }
 
+bool vertice_isolado(int** grafo,int quant_vertices){
+    int cont = 0;
+    bool isolado = false;
+    for(int i = 0;i<quant_vertices;i++){
+        for(int j = 0;j<quant_vertices;j++){
+            if(grafo[i][j] > 0 && i != j){
+                cont++;
+            }
+        }
+        if(cont == 0){
+            isolado = true;
+        }
+    }
+}
+
+int vertice_folha(int** grafo,int quant_vertices){
+    int cont = 0;
+    int quant_vertice_folha = 0;
+    for(int i = 0;i<quant_vertices;i++){
+        for(int j = 0;j<quant_vertices;j++){
+            if(grafo[i][j] > 0 && i != j){
+                cont++;
+            }
+        }
+        if(cont == 1){
+            quant_vertice_folha++;
+        }
+        cont = 0;
+    }
+}
+
 void menu(int** grafo,int quant_vertices){
     char opc,resp;
     do{
@@ -132,7 +163,19 @@ void menu(int** grafo,int quant_vertices){
                     cout<< "tem laco(s): " << quant_lacos(grafo,quant_vertices) << endl;
                 }else{
                     cout << "nao tem laco" << endl;
-                }   
+                } 
+            case 4:
+                if(vertice_folha(grafo,quant_vertices) >= 1){
+                    cout<< "tem vertice folha: " << vertice_folha(grafo,quant_vertices) << endl;
+                }else{
+                    cout << "nao tem vertice folha" << endl;
+                }
+            case 5:
+                if(vertice_isolado){
+                    cout << "tem vertice isolado";
+                }else{
+                    cout << " nao tem vertice isolado";
+                }
             }
     }
     while(resp == 's');
@@ -177,6 +220,16 @@ int main(){
         cout << "e multigrafo" << endl;
     }else{
         cout << "nao e multigrafo" << endl;
+    }
+    if(vertice_isolado){
+        cout << "tem vertice isolado" << endl;
+    }else{
+        cout << " nao tem vertice isolado" << endl;
+    }
+    if(vertice_folha(grafo,quant_vertices) >= 1){
+        cout<< "tem vertice folha: " << vertice_folha(grafo,quant_vertices) << endl;
+    }else{
+        cout << "nao tem vertice folha" << endl;
     }
 
 
