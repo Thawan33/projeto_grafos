@@ -33,9 +33,10 @@ void imprimir_matriz(int** mat, int lin, int col){
     }
 }
 
-void fazer_ligacoes(int** grafo,int quant_vertices,bool direcional){
+int fazer_ligacoes(int** grafo,int quant_vertices,bool direcional){
     char resp;
     int quant_arestas,vert_inicial,vert_final;
+    int arestas_totais = 0;
     do{
         cout << "Vertice que deseja fazer uma ligacao: ";
         cin >> vert_inicial;
@@ -53,13 +54,19 @@ void fazer_ligacoes(int** grafo,int quant_vertices,bool direcional){
                     cout << "numero negativo!" << endl;
                 }else{
                     if(direcional){
-                        grafo[vert_inicial][vert_final] = quant_arestas;
+                        grafo[vert_inicial][vert_final] += quant_arestas;
+                        arestas_totais+= quant_arestas;
                         cout << endl << "------ MATRIZ ATUAL ------" << endl;
                         imprimir_matriz(grafo,quant_vertices,quant_vertices);
                         cout << endl;
                     }else{
-                        grafo[vert_inicial][vert_final] = quant_arestas;
-                        grafo[vert_final][vert_inicial] = quant_arestas;
+                        if(vert_inicial != vert_final){
+                            grafo[vert_inicial][vert_final] += quant_arestas;
+                            grafo[vert_final][vert_inicial] += quant_arestas;
+                        }else{
+                            grafo[vert_inicial][vert_final] += quant_arestas;
+                        }
+                        arestas_totais+= quant_arestas;
                         cout << endl << "------ MATRIZ ATUAL ------" << endl;
                         imprimir_matriz(grafo,quant_vertices,quant_vertices);
                         cout << endl;
@@ -74,6 +81,7 @@ void fazer_ligacoes(int** grafo,int quant_vertices,bool direcional){
         while(resp != 's' && resp != 'n');
     }
     while(resp == 's');
+    return arestas_totais;
 }
 
 //verificações --------------------------------------------------
@@ -155,11 +163,34 @@ int vertice_folha(int** grafo,int quant_vertices){
     return quant_vertice_folha;
 }
 
-void menu(int** grafo,int quant_vertices){
+bool planar(int quant_vertices,int quant_arestas){
     char resp;
-    int opc;
     do{
-        cout << "verificar se e completo[1] \n Verificar se e um multigrafo[2] \n Quantos laços existem[3] \n Quantos vertices folhas existem[4] \n Verificar se existe vertice isolado[5] \n Verificar se e possível ser planar[6] \n Sair[7]: ";
+        cout << "grafo e bipartido? [s] ou [n]";
+        cin >> resp;
+    }
+    while(resp != 's' && resp != 'n');
+    //consertar para incluir na condição se a quantidade de vertices for menor ou igual a 2!!!!!
+    if(resp == 'n'){
+        if(quant_arestas <= 3 * quant_vertices - 6){
+            return true;
+        }else{
+            return false;
+        }
+    }else{
+        if(quant_arestas <= 2 * quant_vertices - 4){
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
+
+void menu(int** grafo,int quant_vertices,int quant_arestas){
+    int opc;
+    bool fim = false;
+    do{
+        cout << "verificar se e completo[1] \n Verificar se e um multigrafo[2] \n Quantos lacos existem[3] \n Quantos vertices folhas existem[4] \n Verificar se existe vertice isolado[5] \n Verificar se e possivel ser planar[6] \n Sair[7]: ";
         cin >> opc;
         switch (opc){
             case 1:
@@ -198,16 +229,21 @@ void menu(int** grafo,int quant_vertices){
                 }
                 break;
             case 6:
-                /* verificar se é possível ser planar*/
+                if(planar(quant_vertices,quant_arestas)){
+                    cout << "pode ser planar" << endl;
+                }else{
+                    cout << "nao pode ser planar" << endl;
+                }
+                break;
+            case 7:
+                fim = true;
                 break;
             default:
                 cout << "opcao invalida" << endl;
                 break;
             }
-        cout << "deseja fazer outra verificao?[s]: ";
-        cin >> resp;
     }
-    while(resp == 's');
+    while(!fim);
 }
 
 int main(){
@@ -226,22 +262,20 @@ int main(){
         direcional = false;
     }
 
-    int quant_vertices;
+    int quant_vertices,quant_arestas;
     cout << "Quantos vertices tem o grafo? ";
     cin >> quant_vertices;
 
     //criação da matriz
     int** grafo = criar_matriz(quant_vertices,quant_vertices);
     preencher_matriz(grafo,quant_vertices,quant_vertices);
-    fazer_ligacoes(grafo,quant_vertices,direcional);
+    quant_arestas = fazer_ligacoes(grafo,quant_vertices,direcional);
     cout<< endl << "------ MATRIZ FINAL ------" << endl;
     imprimir_matriz(grafo,quant_vertices,quant_vertices);
     cout << endl;
 
 
-
-
-    menu(grafo,quant_vertices);
+    menu(grafo,quant_vertices,quant_arestas);
 
     //fim do programa
     system ("pause");
