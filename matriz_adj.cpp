@@ -131,20 +131,18 @@ int quant_lacos(int** grafo,int quant_vertices){
     return lacos;
 }
 
-int vertice_isolado(int** grafo,int quant_vertices){
-    int cont, vertices_isolados = 0;
+bool vertice_isolado(int** grafo,int quant_vertices){
+    int soma;
     for(int i = 0;i<quant_vertices;i++){
-        cont = 0;
+        soma = 0;
         for(int j = 0;j<quant_vertices;j++){
-            if(grafo[i][j] > 0 && i != j){
-                cont++;
-            }
+            soma += grafo[i][j];
         }
-        if(cont == 0){
-            vertices_isolados++;
+        if(soma == 0){
+            return true;
         }
     }
-    return vertices_isolados;
+    return false;
 }
 
 int vertice_folha(int** grafo,int quant_vertices){
@@ -222,7 +220,7 @@ void menu(int** grafo,int quant_vertices,int quant_arestas){
                 }
                 break;
             case 5:
-                if(vertice_isolado(grafo,quant_vertices) > 0){
+                if(vertice_isolado(grafo,quant_vertices)){
                     cout << "tem vertice isolado" << endl;
                 }else{
                     cout << " nao tem vertice isolado" << endl;
@@ -273,7 +271,6 @@ int main(){
     cout<< endl << "------ MATRIZ FINAL ------" << endl;
     imprimir_matriz(grafo,quant_vertices,quant_vertices);
     cout << endl;
-
 
     menu(grafo,quant_vertices,quant_arestas);
 
